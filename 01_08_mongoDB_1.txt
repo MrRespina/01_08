@@ -1,0 +1,85 @@
+use video > 사용할 DB 선택
+
+movie = {'title':'1111,'director':'1234','year':1977}  > 도큐먼트 생성
+
+db.movies.insertOne(movie) > movies 라는 컬렉션에 movie라는 도큐먼트를 넣어준다.
+db.movies.insertOne({'title':'1111,'director':'1234','year':1977}) > 이런식으로 넣어주기도 가능함.
+
+db.movies.find() > movies 컬렉션에 있는 도큐먼트의 정보를 보여줌.
+db.movies.find().pretty() > movies 컬렉션에 있는 도큐먼트의 정보를 이쁘게 보여줌.(세로열 맞춤)
+
+db.movies.findOne({'title':'star wars'}) > movies 컬렉션에 있는 것 중에서 원하는 정보(title이 star wars 인 것)를 찾음
+
+db.movies.drop() > movies 컬렉션에 있는 모든 정보를 삭제
+
+db.movies.updateOne({'title':'star'},{$set : {'title':'star wars-IV'}}) > movies 컬렉션에 있는 조건에 맞는 도큐먼트의 정보를 업데이트함. (만약 조건이 같다면 첫번째만)
+
+db.movies.updateOne({'title':'star wars-IV'},{$set : {'reviews':[]}}) > 키가 없다면, 추가됨!
+
+db.movies.deleteOne({'title':'star wars'}) > 조건에 맞는 도큐먼트를 삭제
+
+
+
+db.movies.insertOne({'title':'Stand by Me'})
+
+db.movies.insertMany([{'title':'Stand by Me'}])
+
+db.movies.insertMany([{'_id':0,'title':'Top Gun'},{'_id':1,'title':'Back to the Future'},{'_id':2,'title':'Gremlins'},{'_id':3,'title':'Aliens'}]) > 여러개를 한번에 넣어줄 수 있음. 배열안에 도큐먼트 넣어줌
+
+db.movies.insertMany([{'_id':4,'title':'Top Gun'},{'_id':6,'title':'Back to the Future'},{'_id':6,'title':'Gremlins'},{'_id':7,'title':'Aliens'}]) > id가 중복되었을 때는 그 이전까지 실행하고 에러구문 이후는 실행 x
+
+
+
+db.movies.deleteOne('title':'Top Gun'}) > 같은 데이터가 여러개 있으면 첫 번째 데이터 삭제. 다른 데이터는 삭제되지 않음.
+
+db.movies.deleteMany({'title':'Top Gun'}) > 다중 삭제 가능.
+
+db.movies.deleteMany({}) > 삭제 가능
+
+
+db.people.insertOne({'_id':ObjectId(),'name':'joe','friends':32,'enemies':2})
+
+var joe = db.people.findOne({'name':'joe'}) > 컬렉션에서 원하는 정보를 가진 도큐먼트를 하나 찾을 수 있음.
+
+joe.relationships = {'friends':joe.friends , 'enemies':joe.enemies} > 서브 도큐멘트 만들기. (도큐먼트 내부 인자로 도큐먼트), joe 변수를 이용해 사용
+
+joe.username = joe.name > 변수에 있는 인자를 사용해서 추가적인 속성 생성
+
+delete joe.friends > 변수에 있는 속성을 delete로 지울 수 있음.
+
+
+
+db.people.replaceOne({'name':'joe'},joe) > 원하는 속성을 가진 도큐먼트를 업데이트 할 수 있음.
+
+db.people.updateOne({'username':'joe'},{$set : {'age':20}}) > age가 없었기때문에 추가되었음.
+
+var joe = db.people.findOne({'username':'joe'})
+
+joe.age++          > ++ 연산자 사용 가능. (변수에 넣어놓았음.)
+
+db.people.replaceOne({'username':'joe'},joe) > 변수에 넣은 값으로 변환 후에 다시 넣어줌.
+
+db.people.replaceOne({"_id" : ObjectId("659b92a3d5032b503beef42f")},joe)
+
+
+< inc 연산자 사용하여 갱신 >
+
+db.people.updateOne({'username':'joe'},{$inc : {'age':2}})    > inc 연산자를 활용하여 연산 (+2) 해줄 수 있음.
+
+
+< set 연산자 > 필드(속성:키) 가 없는 경우 필드를 생성
+
+db.people.updateOne({'username':'joe'},{$set : {'location':'서울'}})
+
+db.people.updateOne({"_id" : ObjectId("659b92a3d5032b503beef42f")},{$set : {'favorite book':'Green Eggs and Hams'}})
+
+db.people.updateOne({"_id" : ObjectId("659b92a3d5032b503beef42f")},{$set : {'favorite book':['Green Eggs and Ham','war and peace']}}) > 속성을 배열로 생성
+
+
+# inc 연산자나 set 연산자를 사용하지 않으면 에러 생김.
+
+db.people.updateOne({'username':'joe'},{$unset : {'favorite book':0}}) > unset : 필드 삭제
+
+db.people.updateOne({'relationships.friends':32},{$inc:{'relationships.enemies':2}})
+
+
